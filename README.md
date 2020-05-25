@@ -1,12 +1,20 @@
-#Diffie-Hellman
+# Diffie-Hellman
 
 
-###What is it
+### What is it
 Diffie-Hellman was originally one of the earliest public-key protocols, and first later used as a symmetric-key protocol. Most secure connections established on a insecure network will benefit from using symmetric encryption rather than assymetric encryption, since the encryption and decipher algorithms are less complex and thereby require less computational power and will be executed faster. Hence asymmetric encryption algorithms like RSA is often used for encrypting private keys to establish a symmetric connection. 
 
 
-#REWRITE
-The Diffie-Hellman algorithm is closely related to the discrete logarithm problem. which describes some concrete rules that makes it really inefficient to isolate a variable from an equation. Diffie-Hellman utilizes the discrete logarithm problem in it's key generation process to compute secrets which are able to be compromised consistently, but highly inefficient. Diffie-hellman is implemented over 2 algorithms, the modular exponential and the elliptic curve groups modulo algorithms. I will only address the (MODP) version. The algorithm is based on mathematical principles from multiple branches of pure mathematics, e.g. group theory and number theory.
+# REWRITE
+The Diffie-Hellman algorithm is closely related to the discrete logarithm problem. Diffie-Hellman uses the same equation described in the discrete logarithm problem $g^x \mod p$. This is because if we choose p as a large prime and $g$ as a primitive root, which means that raised to an exponent x where $x\in (0,p)$ they will each yield unique congruences and in no predictable order relative to the generator and the prime modulo. 
+
+![Alt text](./assets/primitiveRootTable.svg)
+
+On the above table we can see they have used $g=3$ and $p=7$ in order to demonstrate a primitive root. Another way to find the congruence of a modular equation 
+
+File:Diffie-Hellman_Key_Exchange.svgDiffie-Hellman utilizes this problem to it's advantage in it's key generation process. This means that the parties can generate private keys while being able to agree on identical generators and prime modulos, which due to the wonders of mathematics makes them able to generate identical symmetric keys without ever exposing their private keys. Making it near impossible for eavesdroppers to compromise their private keys because of discrete logarithm problem. There is two popular implementatinos of Diffie-Hellman, the one being modp and the other being elliptic curve groups. I will not address the ladder. The algorithm is based on mathematical principles from multiple branches of pure mathematics, e.g. group theory and number theory. Prior to this assignment, I did not know either of them existed.
+
+### Example of a Diffie-Hellman
 
 ![Alt text](./assets/dh.png)
 ######https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#/media/File:Diffie-Hellman_Key_Exchange.svg
@@ -60,9 +68,22 @@ When p is a "safe prime", this means that $(p−1)/2$ is also prime. We then def
 
 Since the size of the order of our subgroup has to be a prime, we can obviously not use a generator that creates a cardinality of $2q$ since it would by definition not be a prime number. (unles it is 1, which for obvious reasons would be naive) 
 Usually the generator chosen for the Diffie-Hellman modp algorithm is $2$. In actuality all generators used in IKE's published gorups are $2$. But in case the combination of your generator and prime modulos yields a subgroup with the cardinality of $2q$, you usally have to change the generator. To demonstrate a situation I will choose the prime number $83$ which conforms to our previous requirements for a safe prime $(83-1)/2=41$, which will make our desired order of our subgroup $q=41$. 
-Considering the statement previously mentioned ``the order of any non-zero $g\mod p$ (except 1 and p−1) is either $q$ or $2q$``, a careless implementation might use $g=2$ however this yields a order of size $82\equiv2q$.
+Considering the statement previously mentioned ``the order of any non-zero $g\mod p$ (except 1 and p−1) is either $q$ or $2q$``, a careless implementation might use $g=2$ however this yields a order of size $82\equiv2q$. 
 ```js
+const groupSize = (p, g) => {
+    const group = new Set()
+    for(let i = 0; i < p-1; i++){
+        group.add((g**i)%p)
+    }
+    return group.size
+}
+
+console.log(groupSize(83, 2))
 ```
+``ÒUTPUT: 82``
+So using $g=2$ we the order of our subgroup will be 82, which is ``q2`` as speculated. However if we use $g=3$ we will get ``ÒUTPUT: 41`` and now we have a safe combination of prime and generator, since the order of our subgroup is a Sophie Germain prime.
+
+One should be careful using JavaScript for implementing mathematical functions with big numbers. I have learned this the hard way during this project. JavaScript will silently fail since any numbers using more than $2^{53}-1$ bits will be converted to floating point numbers. Which will make arithmetic inaccurate.
 
  $q=41$ and 41 is thereby a member of Sophie Germains prime numbers. If we use the generator 2 the cardinality 
 
@@ -76,7 +97,7 @@ Choosing the generator does not need as much thought as the prime modulo. When t
   
 To give an idea of the actual parameter sizes, typically used group and prime sizes are 160 bits for q and 1024 bits for p, or 256 bits for q and 2048 bits for p. 
 
-## Create and exchange public keys
+### Create and exchange public keys
 
 After the prime modulo and the generator has been agreed upon by the parties, they will generate a public key or shared value. I will use Alice and Bob as examples as the two parties. 
 
@@ -86,7 +107,7 @@ Bob will also generate a secret key $b$ and $b\in[1,p-1]$ which he will use to g
 
 they will transmit their generated public keys $A$ and $B$ to eachother. Now the eavesdropper is exposed to $A$, $B$, $g$ and $p$ but neither Alices nor bobs secret keys $a$ and $b$ been exposed over a public network.
 
-## Generate symmetric keys
+### Generate symmetric keys
 
 Using their own privatekeys $prk$ and the other parties public key $puk$ they can generate their symmetric keys $k$
 both Alice and bob do the following
@@ -103,9 +124,9 @@ a^{x}=&b\\
 $$
 
 However when we introduce the modulo in the equation, it suddenly becomes impossible to solve the equation without using functions. Really time consuming functions.
-### Attacks on Diffie-Hellman
+## Attacks on Diffie-Hellman
 
-##### small subgroup attack
+#### small subgroup attack
 because some attacks relies on the factorizations an example could be the ``small subgroup attack`` where an eavesdropper intercepts the public key exchange and looks up for possible subgroups by searching through factors of $(p−1)$ and finds a small factor ``q`` and sends a public key with using the exponent generating the small subgroup hence the name of the attack.
 Confusion on prime sizes relative to secret number sizes. There is a general concensus that the prime used for Diffie-Hellman should be atleast 1024 bit, more preferably 2048 bit to be considered "safe". 
 
