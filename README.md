@@ -69,6 +69,7 @@ When p is a "safe prime", this means that $(p−1)/2$ is also prime. We then def
 Since the size of the order of our subgroup has to be a prime, we can obviously not use a generator that creates a cardinality of $2q$ since it would by definition not be a prime number. (unles it is 1, which for obvious reasons would be naive) 
 Usually the generator chosen for the Diffie-Hellman modp algorithm is $2$. In actuality all generators used in IKE's published gorups are $2$. But in case the combination of your generator and prime modulos yields a subgroup with the cardinality of $2q$, you usally have to change the generator. To demonstrate a situation I will choose the prime number $83$ which conforms to our previous requirements for a safe prime $(83-1)/2=41$, which will make our desired order of our subgroup $q=41$. 
 Considering the statement previously mentioned ``the order of any non-zero $g\mod p$ (except 1 and p−1) is either $q$ or $2q$``, a careless implementation might use $g=2$ however this yields a order of size $82\equiv2q$. 
+
 ```js
 const groupSize = (p, g) => {
     const group = new Set()
@@ -80,6 +81,7 @@ const groupSize = (p, g) => {
 
 console.log(groupSize(83, 2))
 ```
+
 ``ÒUTPUT: 82``
 So using $g=2$ we the order of our subgroup will be 82, which is ``q2`` as speculated. However if we use $g=3$ we will get ``ÒUTPUT: 41`` and now we have a safe combination of prime and generator, since the order of our subgroup is a Sophie Germain prime.
 

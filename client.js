@@ -1,7 +1,3 @@
-/*
-const { practical } = require('./variables')
-const { p, g } = practical()
-*/
 const {
     medium: { p, g },
 } = require('./variables')
