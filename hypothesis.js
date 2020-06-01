@@ -1,5 +1,5 @@
 const {
-    medium: { p, g },
+    EIGHT_BITS: { p, g },
     a,
 } = require('./variables')
 const { getGroup } = require('./prime-functions')

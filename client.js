@@ -1,5 +1,5 @@
 const {
-    medium: { p, g },
+    EIGHT_BITS: { p, g },
     a,
 } = require('./variables')
 const crypto = require('crypto')
@@ -13,6 +13,7 @@ const settings = {
 }
 
 const diffieHellman = (a) => {
+    console.log('a: ', a)
     const A = g ** a % p
 
     console.log('A: ', A)
@@ -29,5 +30,4 @@ diffieHellman(a)
 
 module.exports = {
     diffieHellman,
-    a,
 }

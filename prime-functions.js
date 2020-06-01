@@ -17,6 +17,10 @@ const getGroup = (p, g) => {
     return group
 }
 
+const getGroupElement = (p, g) => {
+    return g ** p - (BigInt(Math.floor(Math.random() * 25)) % g)
+}
+
 /**
  * The only even prime number is 2. All other even numbers can be divided by 2.
  * If the sum of a number's digits is a multiple of 3, that number can be divided by 3.
@@ -89,6 +93,7 @@ const eratosthenes = function (n) {
 
 module.exports = {
     isSofieGermainPrime,
+    getGroupElement,
     isGroupSafe,
     getGroup,
     isPrime,

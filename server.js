@@ -1,12 +1,13 @@
 const app = require('express')()
 const {
-    medium: { p, g },
-    b,
+    EIGHT_BITS: { p, g },
+    //b,
 } = require('./variables')
 
 app.get('/dh/:A', (req, res) => {
     const A = BigInt(req.params.A)
-    //const b = BigInt(Math.floor(Math.random() * Number(p)))
+    const b = BigInt(Math.floor(Math.random() * Number(p)))
+    console.log('b', b)
     const B = g ** b % p
     console.log('B', B)
     const key = A ** b % p
