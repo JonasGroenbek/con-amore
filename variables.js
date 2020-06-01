@@ -2,20 +2,29 @@ const crypto = require('crypto')
 const bigint = require('bigint-buffer')
 
 module.exports = {
-    small: {
+    a: 50n,
+    b: 184n,
+    FIVE_BITS: Object.freeze({
         p: 23n,
         g: 5n,
-    },
-    //8 bit prime
-    medium: {
+    }),
+    EIGHT_BITS: Object.freeze({
         p: 251n,
-        g: 248n,
-    },
-    //64 bit prime
-    big: {
-        p: 4093n,
-        g: 4087n,
-    },
+        g: 6n,
+    }),
+    TWELVE_BITS: Object.freeze({
+        p: 4007n,
+        g: 2n
+    }),
+    SIXTEEN_BITS: Object.freeze({
+        p: 64319n,
+        g: 3n,
+    }),
+    //22 bit prime
+    TWENTYTWO_BITS: Object.freeze({
+        p: 2097143n,
+        g: 2n,
+    }),
     practical: (primeSize) => {
         const dh = crypto.createDiffieHellman(primeSize)
         const primeBuffer = dh.getPrime()
@@ -32,5 +41,8 @@ module.exports = {
                 resolve(bigint.toBigIntLE(buffer))
             })
         })
+    },
+    getRandomPrime: () => {
+        return primes[Math.floor(Math.random() * primes.length)]
     },
 }

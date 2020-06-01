@@ -1,5 +1,6 @@
 const {
     medium: { p, g },
+    a,
 } = require('./variables')
 const crypto = require('crypto')
 crypto.randomBytes(256)
@@ -11,9 +12,10 @@ const settings = {
     },
 }
 
-const requestKey = () => {
-    const a = BigInt(34545656)
+const diffieHellman = (a) => {
     const A = g ** a % p
+
+    console.log('A: ', A)
 
     fetch(`http://localhost:6872/dh/${A}`, settings)
         .then((res) => res.json())
@@ -23,4 +25,9 @@ const requestKey = () => {
         })
 }
 
-requestKey()
+diffieHellman(a)
+
+module.exports = {
+    diffieHellman,
+    a,
+}

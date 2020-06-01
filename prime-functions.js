@@ -1,9 +1,20 @@
+const sqrt = require('./util/sqrt')
+
+//A group is considered safe if the prime is a associate prime of a Sophie Germain Prime
 const isGroupSafe = (p, g) => {
     const group = new Set()
-    for (let i = 0; i < p - 1; i++) {
+    for (let i = 0n; i < p - 1n; i++) {
         group.add(g ** i % p)
     }
-    return group.size == p / 2 - 1
+    return (p - 1n) / 2n === BigInt(group.size)
+}
+
+const getGroup = (p, g) => {
+    const group = new Set()
+    for (let i = 0n; i < p - 1n; i++) {
+        group.add(g ** i % p)
+    }
+    return group
 }
 
 /**
@@ -20,18 +31,22 @@ const isSofieGermainPrime = (p) => {
     return isPrime(ap)
 }
 
+/**
+ * checks whether p is a prime or not using Sieve of Erasthones
+ * @param {Bigint} p
+ */
 const isPrime = (p) => {
     if (
-        p % 2 === 0 ||
-        //Number(p).toString().split().reduce((acc, cur) => acc + Number(cur), 0) % 3 === 0 || 
-        //((p - 1) % 9 + 1) % 3 === 0 || 
-        p % 3 === 0 || 
-        (p > 5 && Number(p).toString()[Number(p.toString().length - 1)] === 5)
+        p % 2n === 0n ||
+        //Number(p).toString().split().reduce((acc, cur) => acc + Number(cur), 0) % 3 === 0 ||
+        //((p - 1) % 9 + 1) % 3 === 0 ||
+        p % 3n === 0n ||
+        (p > 5n && p.toString().split('')[p.toString().length - 1] == 5)
     ) {
         return false
     }
 
-    const segregator = Math.floor(Math.sqrt(p))
+    const segregator = sqrt(p)
     const primes = eratosthenes(segregator)
 
     for (let i = 0; i < primes.length; i++) {
@@ -45,12 +60,12 @@ const isPrime = (p) => {
 //Sieve of Eratosthenes
 const eratosthenes = function (n) {
     let array,
-        upperLimit = Math.sqrt(n+1),
+        upperLimit = sqrt(n + 1n),
         output = []
 
     array = Array(n).fill(true)
 
-    for (let i = 2; i <= upperLimit; i++) {
+    for (let i = 2n; i <= upperLimit; i++) {
         if (array[i]) {
             for (let j = i * i; j < n; j += i) {
                 array[j] = false
@@ -58,7 +73,7 @@ const eratosthenes = function (n) {
         }
     }
 
-    for (let i = 2; i < n; i++) {
+    for (let i = 2n; i < n; i++) {
         if (array[i]) {
             output.push(i)
         }
@@ -69,3 +84,13 @@ const eratosthenes = function (n) {
 
 //Sofie Germain primes:     11, 23, 29, 41, 53
 //Non Sofie Germain primes: 13, 17, 31, 37, 43
+
+//console.log(isGroupSafe(BigInt(47), BigInt(2)))
+
+module.exports = {
+    isSofieGermainPrime,
+    isGroupSafe,
+    getGroup,
+    isPrime,
+    eratosthenes,
+}
