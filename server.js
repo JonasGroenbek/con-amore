@@ -1,7 +1,6 @@
 const app = require('express')()
 const {
     EIGHT_BITS: { p, g },
-    //b,
 } = require('./variables')
 
 app.get('/dh/:A', (req, res) => {
