@@ -1,3 +1,3 @@
 # Diffie-Hellman
 
-Small pesronal project demonstrating a Diffie-Hellman key exchange
+Small personal project demonstrating a Diffie-Hellman key exchange
